@@ -1,6 +1,10 @@
 <?php 
 namespace Barqdev\Autocrud;
 
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\ServiceProvider;
 
 class AutocrudServiceProvider extends ServiceProvider{
@@ -8,6 +12,8 @@ class AutocrudServiceProvider extends ServiceProvider{
     public function boot()
     {
         # code...
+        // git tag -a 1.0.1 -m "Releasing version v1.0.1"
+        // git push origin 1.0.2   
         // dd(123123);
         Builder::macro('whereLike', function ($attributes, string $searchTerm) {            
             $this->where(function (Builder $query) use ($attributes, $searchTerm) {
