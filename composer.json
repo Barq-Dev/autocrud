@@ -1,0 +1,24 @@
+{
+    "name": "barq-dev/autocrud",
+    "description": "Helper untuk mempercepat pembuatan CRUD Modul",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Noval Bayu Setiawan",
+            "email": "novalbayu28@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload":{
+        "psr-4": {
+            "Barqdev\\Autocrud\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers":[
+                "Barqdev\\Autocrud\\AutocrudServiceProvider"
+            ]
+        }
+    }
+}
