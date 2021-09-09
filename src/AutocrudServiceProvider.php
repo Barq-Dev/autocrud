@@ -14,7 +14,12 @@ class AutocrudServiceProvider extends ServiceProvider{
         # code...
         // git tag -a 1.0.1 -m "Releasing version v1.0.1"
         // git push origin 1.0.2   
-        // dd(123123);
+        
+        $this->publishes([
+            __DIR__.'/Stubs/controller.model.stub' => __DIR__.'/../../../../stubs/controller.model.stub',
+            __DIR__.'/Stubs/model.stub' => __DIR__.'/../../../../stubs/model.stub',
+        ], 'autocrud');
+        
         Builder::macro('whereLike', function ($attributes, string $searchTerm) {            
             $this->where(function (Builder $query) use ($attributes, $searchTerm) {
                 foreach (Arr::wrap($attributes) as $attribute) {
@@ -41,6 +46,10 @@ class AutocrudServiceProvider extends ServiceProvider{
     public function register()
     {
         # code...
+        $this->commands([
+            Console\InitCommand::class,
+            Console\BaseCommand::class,
+        ]);
     }
 }
 
