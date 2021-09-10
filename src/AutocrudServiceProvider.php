@@ -19,6 +19,14 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Stubs/controller.model.stub' => __DIR__.'/../../../../stubs/controller.model.stub',
             __DIR__.'/Stubs/model.stub' => __DIR__.'/../../../../stubs/model.stub',
         ], 'autocrud');
+
+        $this->publishes([
+            __DIR__.'/Resources/js/vue/router' => __DIR__.'/../../../../resources/js/router',
+            __DIR__.'/Resources/js/vue/layouts' => __DIR__.'/../../../../resources/js/layouts',
+            __DIR__.'/Resources/js/vue/views' => __DIR__.'/../../../../resources/js/views',
+            __DIR__.'/Resources/js/vue/App.vue' => __DIR__.'/../../../../resources/js/App.vue',
+            __DIR__.'/Resources/js/vue/app.js' => __DIR__.'/../../../../resources/js/app.js',
+        ], 'autocrud-ui-vue');
         
         Builder::macro('whereLike', function ($attributes, string $searchTerm) {            
             $this->where(function (Builder $query) use ($attributes, $searchTerm) {
@@ -49,6 +57,7 @@ class AutocrudServiceProvider extends ServiceProvider{
         $this->commands([
             Console\InitCommand::class,
             Console\BaseCommand::class,
+            Console\UiCommand::class,
         ]);
     }
 }
