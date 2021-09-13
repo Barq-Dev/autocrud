@@ -2,12 +2,13 @@
 
 namespace Barqdev\Autocrud;
 
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Barqdev\Autocrud\Partials\LocalScopeTrait;
 
 class AutoModel extends Model
 {
-    
+    use LocalScopeTrait;
     // protected $appends = [];
     protected $files = [''];
 

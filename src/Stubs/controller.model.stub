@@ -15,7 +15,21 @@ class {{ class }} extends Controller
     public function __construct()
     {
         $this->model = new {{model}};
-        $this->searchFields = []; //Fill with searchable column
+        $this->searchFields = []; //Fill with searchable searchFields
         $this->request = new {{model}}Request;
+    }
+
+    public function customRequestData($request){
+
+        //if($request->has('file'))
+        //    $request['foto'] = $this->upload('foto',$request->file);
+
+        return $request;
+    }
+
+    public function callbackAfterStoreOrUpdate($data, $request)
+    {
+        # code...
+        return $data;
     }
 }

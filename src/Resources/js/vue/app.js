@@ -1,15 +1,19 @@
-
-require('./bootstrap');
-
 window.Vue = require('vue').default;
-// import vuetify from './vuetify';
+import _ from 'lodash'
+import axios from "./axios.js"
+import vuetify from './vuetify';
 import router from './router';
+import store from './store';
+import App from '@/App.vue'
 
-Vue.component('app-component', require('./App.vue').default);
-
+Vue.prototype.$http = axios
+Vue.prototype._ = _
 
 const app = new Vue({
-    el: '#app',
-    // vuetify,
-    router
-});
+    vuetify,
+    router,
+    store,
+    render: h => h(App)
+}).$mount('#app')
+
+export default app

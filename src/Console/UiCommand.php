@@ -21,6 +21,7 @@ class UiCommand extends Command
             '--tag'=>'autocrud-ui-vue',
             '--force'=>true
         ]);
+        $this->info("run `npm install");
         // $this->call("make:request", [
         //     'name'=>$name."Request"
         // ]);
