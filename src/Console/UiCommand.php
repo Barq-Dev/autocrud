@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 
 class UiCommand extends Command
 {
-    protected $signature = 'autocrud:ui {--c|components} {--a|all}';
+    protected $signature = 'autocrud:ui {--c|components} {--s|store} {--a|all}';
     protected $description = 'Copying Vue UI';
 
     public function handle()
@@ -20,9 +20,16 @@ class UiCommand extends Command
         if($this->option('components'))
             $this->call('vendor:publish', [
                 '--tag'=>'autocrud-ui-vue-components',
-                // '--force'=>true
+                '--force'=>true
             ]);
-        elseif($this->option('all')){
+
+        if($this->option('store'))
+            $this->call('vendor:publish', [
+                '--tag'=>'autocrud-ui-vue-store',
+                '--force'=>true
+            ]);
+
+        if($this->option('all')){
             $this->call('vendor:publish', [
                 '--tag'=>'autocrud-ui-vue',
                 '--force'=>true

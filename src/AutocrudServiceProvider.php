@@ -52,9 +52,14 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Resources/js/vue/axios.js' => resource_path('js/axios.js'),
             __DIR__.'/Resources/js/vue/vuetify.js' => resource_path('js/vuetify.js'),
         ], 'autocrud-ui-vue');
+
         $this->publishes([
             __DIR__.'/Resources/js/vue/components/' => resource_path('js/components/'),
         ], 'autocrud-ui-vue-components');
+
+        $this->publishes([
+            __DIR__.'/Resources/js/vue/store/' => resource_path('js/store/'),
+        ], 'autocrud-ui-vue-store');
     }
 
     public function macroList()
