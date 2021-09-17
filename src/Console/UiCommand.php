@@ -13,10 +13,6 @@ class UiCommand extends Command
         // $name = $this->argument('name');
 
         # code...
-        // $this->call("make:model", [
-        //     'name'=>$name,
-        //     '-a'=>true
-        // ]);
         if($this->option('components'))
             $this->call('vendor:publish', [
                 '--tag'=>'autocrud-ui-vue-components',
