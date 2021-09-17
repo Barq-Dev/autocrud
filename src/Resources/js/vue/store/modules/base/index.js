@@ -5,6 +5,7 @@ export default {
     moduleName: '',
     moduleUrl: '',
     loading: false,
+    item: {},
     items: [],
     params:[],
     options: {
@@ -14,6 +15,7 @@ export default {
       sortby: null,
       sortbydesc: null,
     },
+    errors:{},
     total: 0,
   },
   mutations: {
@@ -29,6 +31,19 @@ export default {
         state.options.sortbydesc = value.sortDesc && value.sortDesc[0]? 'desc' : 'asc'
         
       },
+      SET_ERRORS(state, value){
+        state.errors = Object.assign(state.errors, value)
+      },
+      DEL_ERRORS(state, value){
+        delete state.errors[value]
+      },
+      CLEAR_ERRORS(state, value){
+        state.errors = {}
+      },
+
+      SET_ITEM(state, value){
+        state.item = value
+      },
       SET_ITEMS(state, value){
         state.items = value
       },
@@ -37,29 +52,35 @@ export default {
       },
   },
   actions: {
-      async getData({state, commit}, {customUrl, params} = {}){
+      async getData({state, commit}, {customUrl, params, id} = {}){
         state.loading = true
-
-        const {data} = await this._vm.$http(customUrl || state.moduleUrl, {
+      
+        let url = `${customUrl || state.moduleUrl}`+(id? `/${id}` : ``)
+        const {data} = await this._vm.$http(url, {
           params: {...state.options, ...params}
         })
-        
-        commit('SET_ITEMS', data.data)
-        commit('SET_TOTAL', data.total)
+        if(id){
+          commit('SET_ITEM', data)
+        }
+        else{
+          commit('SET_ITEMS', data.data)
+          commit('SET_TOTAL', data.total)
+        }
 
         state.loading = false
       },
 
-      async saveData({state, dispatch}, {customUrl, data}){
+      async saveData({state, commit, dispatch}, {customUrl, data}){
         state.loading = true
         
         await this._vm.$http.post(customUrl || state.moduleUrl, data)
-          .then(() => {})
-          .catch((error) => {
-            console.log(error);
+          .then(() => {
+            commit('CLEAR_ERRORS')
+          })
+          .catch(({response}) => {
+            commit('SET_ERRORS', response.data)
             alert('error')
           })
-
         dispatch('getData')
         state.loading = false
       },

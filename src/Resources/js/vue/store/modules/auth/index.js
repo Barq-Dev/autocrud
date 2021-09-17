@@ -3,7 +3,9 @@ export default {
   namespaced: true,
   state: {
     isAuth: localStorage.getItem('isAuth') || false,
+    token: localStorage.getItem('token') || '',
     cancelTokens: [],
+    error: ''
   },
   getters:{
     cancelTokens(state) {
@@ -11,9 +13,16 @@ export default {
     }
   },
   mutations: {
-      LOGIN(state){
+      SET_ERROR(state, value){
+        state.error = value
+      },
+      CLEAR_ERROR(state, value){
+        state.error = ''
+      },
+      LOGIN(state, data){
         state.isAuth = true
         localStorage.setItem('isAuth', true)
+        localStorage.setItem('token', data.token)
       },
       LOGOUT(state){
         state.isAuth = false
@@ -28,8 +37,17 @@ export default {
   },
   actions: {
       login({commit}, data){
-        commit('LOGIN', data)
-        router.push('/')
+
+        commit('CLEAR_ERROR')
+
+        this._vm.$http.post('auth', data)
+          .then((response) => {
+            commit('LOGIN', response.data)
+            router.push('/')
+          })
+          .catch(({response}) => {
+            commit('SET_ERROR', response.data.error)
+          })
       },
       logout({commit}, data){
         commit('LOGOUT')
