@@ -27,7 +27,7 @@
 
         <v-img
           height="250"
-          :src="item.img"
+          :src="`/storage/uploads/foto/${item.foto}`"
         ></v-img>
         
         

@@ -12,8 +12,8 @@ class AutocrudServiceProvider extends ServiceProvider{
     public function boot()
     {
         # code...
-        // git tag -a 1.0.1 -m "Releasing version v1.0.1"
-        // git push origin 1.0.2   
+        // git tag -a 1.4.0 -m "Releasing version v1.4.0"
+        // git push origin 1.4.0   
         
         $this->publishList();
         $this->macroList();
@@ -52,6 +52,9 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Resources/js/vue/axios.js' => resource_path('js/axios.js'),
             __DIR__.'/Resources/js/vue/vuetify.js' => resource_path('js/vuetify.js'),
         ], 'autocrud-ui-vue');
+        $this->publishes([
+            __DIR__.'/Resources/js/vue/components/' => resource_path('js/components/'),
+        ], 'autocrud-ui-vue-components');
     }
 
     public function macroList()

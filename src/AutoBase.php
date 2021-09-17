@@ -32,21 +32,22 @@ trait AutoBase {
     public function index()
     {
         // dd(request()->all());
+        $request = request();
         $query = [
-            'sortby' => request()->sortby ?? 'created_at',
-            'sortbydesc' => request()->sortbydesc?? 'desc',
-            'per_page' => request()->per_page == 'undefined' || !request()->per_page ? 10 : request()->per_page,
-            'q' => request()->q ?? '',
+            'sortby' => $request->sortby ?? 'created_at',
+            'sortbydesc' => $request->sortbydesc?? 'desc',
+            'per_page' => $request->per_page == 'undefined' || !$request->per_page ? 10 : $request->per_page,
+            'q' => $request->q ?? '',
         ];
 
         $data = $this->model
             ->with($this->with('index'))
-            ->filter(request())
+            ->filter($request)
             ->orderBy($query['sortby'], $query['sortbydesc'])
             ->search($this->searchFields, $query['q'])
-            ->when(request()->non_paginate, 
-                function($q)use($query){
-                    return $q->get();
+            ->when($request->all, 
+                function($q)use($request){
+                    return $request->pluck? $q->pluck(...$request->pluck) : $q->get();
                 },
                 function($q)use($query){
                     return $q->paginate($query['per_page']?? 10);
@@ -59,7 +60,6 @@ trait AutoBase {
     // Additional or custom saving scheme. redefine in controller
     public function scheme()
     {
-        
         $request = request();
         $request = $this->customRequestData($request)->all();
         
@@ -67,17 +67,30 @@ trait AutoBase {
         
         $data = $this->model->updateOrCreate(['id' => $request['id']?? null], $request);
 
-        return $this->json($this->callbackAfterStoreOrUpdate($data, $request));
+        return $this->callbackAfterStoreOrUpdate($data, $request);
+        
     }
 
     public function store()
     {
-        return $this->json($this->scheme());
+        try {
+            return $this->json($this->scheme());
+        } catch (\Exception $ex) {
+            if($ex->status?? false == 422)
+                return response($ex->errors(), 405);
+            return response(['error'=>$ex->getMessage()], 405);
+        }
     }
 
     public function update()
     {
-        return $this->json($this->scheme());
+        try {
+            return $this->json($this->scheme());
+        } catch (\Exception $ex) {
+            if($ex->status?? false == 422)
+                return response($ex->errors(), 405);
+            return response(['error'=>$ex->getMessage()], 405);
+        }
     }
 
     public function show($id)

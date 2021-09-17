@@ -1,7 +1,6 @@
 <template>
   <v-file-input
     v-model="form.file"
-    @change="tes"
     color="deep-purple accent-4"
     counter
     :label="label"
@@ -35,7 +34,7 @@
   export default {
     props:['form','label'],
     data: () => ({
-      file: null,
+      file: [],
     })
   }
 </script>

@@ -42,6 +42,7 @@
               <v-icon>mdi-cached</v-icon>
             </v-btn>
             <v-btn
+              v-if="btnAdd"
               color="primary"
               dark
               class="mb-2"
@@ -53,7 +54,7 @@
           </template>
           <v-card>
             <v-card-title>
-              <span class="headline">{{ editedItem.id ? 'New Item' : 'Edit Item' }}</span>
+              <span class="headline">{{ !editedItem.id ? 'New Item' : 'Edit Item' }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -71,6 +72,11 @@
         </v-dialog>
       </v-toolbar>
     </template>
+
+    <template v-for="slot in slots" v-slot:[`item.${slot}`]="{item}">
+      <slot :name="slot" :item="item"></slot>
+    </template>
+
     <template v-slot:[`item.actions`]="{ item }">
       <v-icon
         small
@@ -95,7 +101,19 @@
 <script>
 import {mapState} from 'vuex'
   export default {
-    props:['moduleName','headers','formData'],
+    props:{
+      moduleName:String,
+      headers:Array,
+      slots:Array,
+      formData:{
+        type:Boolean,
+        default: false
+      },
+      btnAdd:{
+        type:Boolean,
+        default: true
+      },
+    },
     data: () => ({
       search: '',
       options: {},
@@ -110,12 +128,11 @@ import {mapState} from 'vuex'
     },
 
     computed: {
-      ...mapState('base', ['loading','items','total']),
+      ...mapState('base', ['loading','items','total','errors']),
       form(){
         if(this.formData){
           const formData = new FormData()
           for (const key in this.editedItem) {
-            console.log(key);
             formData.append(key, this.editedItem[key])
           }
           return formData
@@ -137,9 +154,10 @@ import {mapState} from 'vuex'
         this.$store.dispatch('base/getData', {params: this.params})
       },
 
-      save () {
-        this.$store.dispatch('base/saveData', {data: this.form})
-        this.close()
+      async save () {
+        await this.$store.dispatch('base/saveData', {data: this.form})
+        if(this._.isEmpty(this.errors))
+          this.close()
       },
 
       editItem (item) {
