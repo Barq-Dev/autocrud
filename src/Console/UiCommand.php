@@ -30,7 +30,7 @@ class UiCommand extends Command
                 '--tag'=>'autocrud-ui-vue',
                 '--force'=>true
             ]);
-            $this->info("run `npm install vue-router vuex @fortawesome/fontawesome-free material-design-icons-iconfont --save`");
+            $this->info("run `npm i vue-router vuex @fortawesome/fontawesome-free material-design-icons-iconfont vue-sweetalert2 --save`");
         }
         // $this->call("make:request", [
         //     'name'=>$name."Request"

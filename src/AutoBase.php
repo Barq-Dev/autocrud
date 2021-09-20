@@ -47,7 +47,8 @@ trait AutoBase {
             ->search($this->searchFields, $query['q'])
             ->when($request->all, 
                 function($q)use($request){
-                    return $request->pluck? $q->pluck(...$request->pluck) : $q->get();
+                    return $request->pluck? 
+                        $q->pluck(...$request->pluck) : $q->get();
                 },
                 function($q)use($query){
                     return $q->paginate($query['per_page']?? 10);
