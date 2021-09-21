@@ -24,12 +24,12 @@ export default {
         state.moduleUrl = this._vm._.kebabCase(value)
       },
       SET_OPTIONS(state, value){
+        state.options = value
         state.options.q = value.q
         state.options.page = value.page
         state.options.per_page = value.itemsPerPage
         state.options.sortby = value.sortBy && value.sortBy[0]
         state.options.sortbydesc = value.sortDesc && value.sortDesc[0]? 'desc' : 'asc'
-        
       },
       SET_ERRORS(state, value){
         state.errors = Object.assign(state.errors, value)
@@ -75,11 +75,12 @@ export default {
         
         await this._vm.$http.post(customUrl || state.moduleUrl, data)
           .then(() => {
+            this._vm.$swal('Success','Data has been saved','success')
             commit('CLEAR_ERRORS')
           })
           .catch(({response}) => {
+            this._vm.$swal('Failed','Failed to save data','error')
             commit('SET_ERRORS', response.data)
-            alert('error')
           })
         dispatch('getData')
         state.loading = false
@@ -89,10 +90,11 @@ export default {
         state.loading = true
 
         await this._vm.$http.delete(`${customUrl || state.moduleUrl}/${data.id}`, {...data})
-          .then(() => {})
+          .then(() => {
+            this._vm.$swal('Success','Data has been deleted','success')
+          })
           .catch((error) => {
-            console.log(error);
-            alert('error')
+            this._vm.$swal('Failed','Failed to delete data','error')
           })
 
         dispatch('getData')

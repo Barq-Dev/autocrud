@@ -87,7 +87,7 @@
     <div v-else class="text-center mt-2">
       <img
         width="500"
-        src="@/assets/img/empty.png"
+        src="../assets/img/empty.png"
       >
       <h3>Tidak ada data</h3>
     </div>

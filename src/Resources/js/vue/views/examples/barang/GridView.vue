@@ -1,8 +1,9 @@
 <template>
-    <CardGrid :items="buku"/>
+    <CardGrid :items="items"/>
 </template>
 <script>
 import CardGrid from '@/components/CardGrid'
+import {mapState, mapActions} from 'vuex'
 export default {
   data() {
     return {
@@ -36,6 +37,16 @@ export default {
   },
   components:{
     CardGrid
-  }
+  },
+  created() {
+      this.$store.commit('base/SET_MODULE_NAME', 'Petugas')
+      this.getData()
+  },
+  computed:{
+    ...mapState('base', ['items'])
+  },
+  methods: {
+    ...mapActions('base', ['getData'])
+  },
 }
 </script>

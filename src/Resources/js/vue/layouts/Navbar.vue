@@ -50,35 +50,48 @@
                         size="100"
                         color="red"
                     >
-                        <img src="https://pbs.twimg.com/profile_images/1197759599224320000/VVApPxap_400x400.jpg" alt="alt">
+                        <img :src="user.avatar_link" alt="alt">
                     </v-avatar>
-                    <p class="white--text subheading mt-1 text-center">Username</p>
+                    <p class="white--text subheading mt-1 text-center">{{user.email}}</p>
                 </v-flex>
                 
             </v-layout>
             <v-divider></v-divider>
             <v-list flat>
-                <v-list-item v-for="link in links" :key="link.text" router :to="link.route" active-class="border">
-                    <v-list-item-action>
-                        <v-icon>{{link.icon}}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title> {{link.text}} </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
-                <v-divider></v-divider>
-                <v-subheader>Settings</v-subheader>
-                <v-list-item router to="/users" active-class="border">
-                    <v-list-item-action>
-                        <v-icon>person</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title> Users </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+                <template v-for="link in links" >
+                    <v-list-item v-if="link.route && (link.can == undefined || userCan(link.can))" :key="link.text" router :to="link.route" active-class="border">
+                        <v-list-item-action>
+                            <v-icon>{{link.icon}}</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title> {{link.text}} </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                    <v-divider v-if="link.divider" :key="link.divider"></v-divider>
+                    <v-subheader v-if="link.subheader" :key="link.subheader">{{link.subheader}}</v-subheader>
+                    <v-list-group
+                        v-if="link.childs"
+                        :key="link.text"
+                        :value="link.childs.find((i)=> i.route == $route.path)"
+                        :prepend-icon="link.icon"
+                        color="white"
+                        no-action
+                    >
+                    <template v-slot:activator>
+                        <v-list-item-title>{{link.text}}</v-list-item-title>
+                    </template>
+                            <v-list-item v-for="child in link.childs" :key="child.text" router :to="child.route" active-class="border">
+                            <v-list-item-action>
+                                <v-icon>{{child.icon}}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title> {{child.text}} </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-group>
+                </template>
             </v-list>
         </v-navigation-drawer>
-
     </nav>
 </template>
 <script>
@@ -87,17 +100,12 @@ import {mapState, mapActions} from 'vuex'
 export default {
     data() {
         return {
-            drawer: true,
-            links: [
-                { icon: 'dashboard', text:'Dashboard',route:'/' },
-                { icon: 'menu_book', text:'Barang',route:'/barang' },
-                { icon: 'person', text:'Pelanggan',route:'/pelanggan' },
-                { icon: 'local_library', text:'Transaksi',route:'/transaksi' },
-            ]
+            drawer: true
         }
     },
     computed:{
-        // ...mapState(['isAuth'])
+        ...mapState('theme',['links']),
+        ...mapState('auth',['user']),
     },
     methods: {
         ...mapActions('auth',['logout'])

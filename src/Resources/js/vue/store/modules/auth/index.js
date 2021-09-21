@@ -2,6 +2,7 @@ import router from '@/router'
 export default {
   namespaced: true,
   state: {
+    user: {},
     isAuth: localStorage.getItem('isAuth') || false,
     token: localStorage.getItem('token') || '',
     cancelTokens: [],
@@ -52,6 +53,12 @@ export default {
       logout({commit}, data){
         commit('LOGOUT')
         router.push('/login')
+      },
+      async auth({state}){
+        await this._vm.$http('auth')
+          .then(({data})=>{
+            state.user = data
+          })
       },
       CANCEL_PENDING_REQUESTS(context) {
         context.state.cancelTokens.forEach((request, i) => {

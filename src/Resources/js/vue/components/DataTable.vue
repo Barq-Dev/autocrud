@@ -17,6 +17,39 @@
           inset
           vertical
         ></v-divider>
+        
+        <v-menu
+            bottom
+            left
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                small
+                rounded
+                color="primary"
+                v-bind="attrs"
+                v-on="on"
+              >
+              <v-icon>file_download</v-icon>
+                Export
+              </v-btn>
+            </template>
+
+            <v-list>
+              <v-list-item
+                dense
+                v-for="(item) in ['excel', 'pdf']"
+                :key="item"
+                @click="exportData(item)"
+              >
+                <v-list-item-title>
+                  <v-icon>fa fa-file-{{item}}</v-icon> 
+                    <span>{{ _.startCase(item) }}</span>
+                </v-list-item-title>
+                
+              </v-list-item>
+            </v-list>
+          </v-menu>
         <v-spacer></v-spacer>
 
         <v-text-field
@@ -39,7 +72,7 @@
               :loading="loading"
               @click="load"
             >
-              <v-icon>mdi-cached</v-icon>
+              <v-icon>cached</v-icon>
             </v-btn>
             <v-btn
               v-if="btnAdd"
@@ -83,13 +116,13 @@
         class="mr-2"
         @click="editItem(item)"
       >
-        mdi-pencil
+        edit
       </v-icon>
       <v-icon
         small
         @click="deleteItem(item)"
       >
-        mdi-delete
+        delete
       </v-icon>
     </template>
     <template v-slot:no-data>
@@ -99,12 +132,16 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
   export default {
     props:{
       moduleName:String,
       headers:Array,
       slots:Array,
+      params:{
+        type:Object,
+        default: () => {}
+      },
       formData:{
         type:Boolean,
         default: false
@@ -117,14 +154,12 @@ import {mapState} from 'vuex'
     data: () => ({
       search: '',
       options: {},
-      params:{},
-
       dialog: false,
       editedItem: {},
     }),
 
     created() {
-      this.$store.commit('base/SET_MODULE_NAME', this.moduleName)
+      this.SET_MODULE_NAME(this.moduleName)
     },
 
     computed: {
@@ -133,7 +168,7 @@ import {mapState} from 'vuex'
         if(this.formData){
           const formData = new FormData()
           for (const key in this.editedItem) {
-            formData.append(key, this.editedItem[key])
+            formData.append(key, this.editedItem[key] == null? '' : this.editedItem[key])
           }
           return formData
         }else
@@ -148,14 +183,17 @@ import {mapState} from 'vuex'
     },
 
     methods: {
+      ...mapActions('base',['getData','saveData','deleteData']),
+      ...mapMutations('base',['SET_OPTIONS','SET_MODULE_NAME']),
       load(){
-        this.$store.commit('base/SET_OPTIONS', {...this.options, q: this.search})
+        this.SET_OPTIONS({...this.options, q: this.search, ...this.params})
         
-        this.$store.dispatch('base/getData', {params: this.params})
+        this.getData({params: this.params})
       },
 
       async save () {
-        await this.$store.dispatch('base/saveData', {data: this.form})
+        await this.saveData({data: this.form})
+        this.$emit('saved', this.form)
         if(this._.isEmpty(this.errors))
           this.close()
       },
@@ -167,8 +205,12 @@ import {mapState} from 'vuex'
 
       deleteItem (item) {
         confirm('Are you sure you want to delete this item?') && 
-          this.$store.dispatch('base/deleteData', {data: item})
+          this.deleteData({data: item})
         
+      },
+
+      exportData(exportType){
+
       },
 
       handleSearch: _.debounce(function (e) {

@@ -1,10 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import app from '@/app'
 import store from '@/store'
 import Dashboard from '../views/Dashboard'
 import Login from '../views/auth/Login'
-import Pelanggan from '../views/ex_pelanggan/Index'
-import Users from '../views/ex_users/Index'
+import Users from '../views/users/Index'
+import Roles from '../views/roles/Index'
+import myRoutes from './routes'
 
 Vue.use(VueRouter)
 
@@ -20,15 +22,16 @@ const routes = [
       component: Login,
     },
     {
-      path: '/pelanggan',
-      name: 'pelanggan',
-      component: Pelanggan,
-    },
-    {
       path: '/users',
       name: 'users',
       component: Users,
     },
+    {
+      path: '/roles',
+      name: 'roles',
+      component: Roles,
+    },
+    ...myRoutes,
   ]
   
   const router = new VueRouter({
@@ -37,15 +40,20 @@ const routes = [
     routes
   })
 
-  router.beforeEach((to, from, next) => {
+  router.beforeEach(async (to, from, next) => {
     /* must call `next` */
-    if(!store.state.auth.isAuth && to.name != 'login')
-      next('login')
+    await store.dispatch('auth/auth')
 
+    if(!(store.state.auth.isAuth || store.state.auth.user.id) && to.name != 'login')
+      next('login')
+      
     if(store.state.auth.isAuth && to.name == 'login')
       next('/')
 
-    next()
+    if(to.meta.can == undefined || app.userCan(to.meta.can))
+      next()
+    else
+      next('/')
   })
 
 export default router

@@ -15,7 +15,7 @@ class InitCommand extends Command
         unlink(__DIR__.'/../../../../../stubs/model.stub');
         unlink(__DIR__.'/../../../../../stubs/controller.model.stub');
         $this->call('vendor:publish', [
-            '--tag'=>'autocrud',
+            '--tag'=>'autocrud-stub',
             '--force'=>true
         ]);
         

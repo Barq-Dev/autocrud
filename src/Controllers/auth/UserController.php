@@ -15,7 +15,7 @@ class UserController extends Controller
     public function __construct()
     {
         $this->model = new User;
-        $this->searchFields = ['name','email']; //Fill with searchable column
+        $this->searchFields = ['name','email','roles.name']; //Fill with searchable column
         $this->request = new UserRequest;
     }
 
@@ -40,7 +40,15 @@ class UserController extends Controller
 
     public function callbackAfterStoreOrUpdate($data, $request)
     {
+        if($request['role']?? null)
+            $data->assignRole($request['role']);
+            
         $data['token'] = $data->createToken('wearebarqun')->plainTextToken;
         return $data;
+    }
+    public function isAuth()
+    {
+        # code...
+        return response(auth()->user());
     }
 }

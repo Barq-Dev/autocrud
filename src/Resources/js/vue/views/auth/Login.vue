@@ -16,7 +16,16 @@
                         >Log in to your account so you can continue builiding <br>and editing your onboarding flows</h6>
                         <v-row align="center" justify="center">
                           <v-col cols="12" sm="8">
-                           
+                           <v-alert
+                            v-if="error"
+                            border="top"
+                            color="red lighten-2"
+                            type="error"
+                            :class="{'mt-16':error}"
+                            dark
+                          >
+                            {{error}}
+                          </v-alert>
                           <v-text-field
                             label="Email"
                             v-model="form.email"
@@ -24,7 +33,7 @@
                             dense
                             color="blue"
                             autocomplete="false"
-                           class="mt-16"
+                            :class="{'mt-16':!error}"
                           />
                           <v-text-field
                             label="Password"
@@ -49,7 +58,7 @@
                                 <span class="caption blue--text">Forgot password</span>
                               </v-col>
                             </v-row>
-                          <v-btn color="blue" dark block tile @click="login">Log in</v-btn>
+                          <v-btn color="blue" dark block tile @click="login(form)">Log in</v-btn>
                      
                          <h5
                           class="text-center  grey--text mt-4 mb-3"
@@ -192,14 +201,15 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapState, mapActions} from 'vuex'
 
   export default {
    data: () => ({
     step: 1,
     form: {
-      email : 'admin@barqun.com',
+      email : 'bayu@gmail.com',
       password : '123123',
+      login : 1,
     }
   }),
   props: {
@@ -208,6 +218,9 @@ import {mapActions} from 'vuex'
   methods: {
     ...mapActions('auth',['login'])
   },
+  computed:{
+    ...mapState('auth',['error'])
+  }
 
     
   }

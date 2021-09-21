@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 
 class BaseCommand extends Command
 {
-    protected $signature = 'autocrud:modul {name}';
+    protected $signature = 'autocrud:modul {name} {--ui}';
     protected $description = 'Making all necessery file (model, migration, controller, etc..)';
 
     public function handle()
