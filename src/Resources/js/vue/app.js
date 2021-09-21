@@ -18,7 +18,7 @@ Vue.mixin({
                 let user = store.state.auth.user;
                 
                 // KALAU ADMIN BOLEH SEMUA
-                if (user.roles[0].name == "admin") return true;
+                if (user.roles && user.roles[0].name == "admin") return true;
                 //KALAU BOLEH MIRIP
                 if (like)
                     if (
@@ -28,7 +28,7 @@ Vue.mixin({
                     )
                         return true;
                 //KALAU DIBOLEHKAN
-                if (user && user.all_permissions.includes(permission)) {
+                if (user && user.all_permissions && user.all_permissions.includes(permission)) {
                     return true;
                 }
                 return false;

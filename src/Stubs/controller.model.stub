@@ -6,7 +6,6 @@ use App\Models\{{model}};
 use Barqdev\Autocrud\AutoBase;
 use App\Http\Requests\{{model}}Request;
 use {{ rootNamespace }}Http\Controllers\Controller;
-use Illuminate\Http\Request;
 
 class {{ class }} extends Controller
 {

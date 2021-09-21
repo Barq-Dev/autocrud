@@ -41,7 +41,7 @@ class UserController extends Controller
     public function callbackAfterStoreOrUpdate($data, $request)
     {
         if($request['role']?? null)
-            $data->assignRole($request['role']);
+            $data->syncRoles($request['role']);
             
         $data['token'] = $data->createToken('wearebarqun')->plainTextToken;
         return $data;

@@ -33,7 +33,7 @@ class BaseCommand extends Command
         $file_dir = __DIR__."/../../../../../routes/api.php";
         $file = file($file_dir);
         $import_controller = 'use App\Http\Controllers\\'.$name.'Controller;'."\n";
-        $route = "Route::resource('".str_replace('_', '-', Str::snake($name))."', ".$name."Controller::class);\n";
+        $route = "\nRoute::resource('".str_replace('_', '-', Str::snake($name))."', ".$name."Controller::class);";
 
         $line = array_key_first(array_filter($file, function($q){
             return substr_count($q, 'Route;');
