@@ -81,7 +81,7 @@ class AutocrudServiceProvider extends ServiceProvider{
         $this->publishes([
             __DIR__.'/Controllers/auth/RoleController.php' => app_path('Http/Controllers/RoleController.php'),
             __DIR__.'/Requests/RoleRequest.php' => app_path('Http/Requests/RoleRequest.php'),
-            __DIR__.'/Database/Seeder/RoleSeeder.php' => database_path('seeder/RoleSeeder.php'),
+            __DIR__.'/Database/Seeders/RoleSeeder.php' => database_path('seeders/RoleSeeder.php'),
         ], 'autocrud-auth-acl');
 
     }

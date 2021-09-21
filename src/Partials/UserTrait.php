@@ -1,8 +1,10 @@
 <?php
 namespace Barqdev\Autocrud\Partials;
 
+use Illuminate\Support\Facades\Storage;
+
 trait UserTrait {
-    protected $appends = ['all_permissions','avatar_link','role'];
+    // protected $appends = ['all_permissions','avatar_link','role'];
     
     protected $files = ['avatar'];
 

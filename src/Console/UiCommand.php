@@ -25,7 +25,7 @@ class UiCommand extends Command
                 '--tag'=>'autocrud-ui-vue-init',
                 '--force'=>true
             ]);
-            $this->warn("run `npm i vue-router vuex @fortawesome/fontawesome-free material-design-icons-iconfont vue-sweetalert2 --save`");
+            $this->warn("run `npm i vue-router vuex vuetify @fortawesome/fontawesome-free material-design-icons-iconfont vue-sweetalert2 --save`");
         }
 
         // Partials

@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AutoRole;
 use Illuminate\Http\Request;
 use Barqdev\Autocrud\AutoBase;
 use App\Http\Requests\RoleRequest;
+use Barqdev\Autocrud\Models\AutoRole;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Validation\ValidationException;
 

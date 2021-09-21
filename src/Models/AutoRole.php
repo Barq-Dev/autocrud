@@ -2,11 +2,11 @@
 
 namespace Barqdev\Autocrud\Models;
 
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Role as Model;
 use Barqdev\Autocrud\Partials\LocalScopeTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class AutoRole extends Role
+class AutoRole extends Model
 {
     use HasFactory, LocalScopeTrait;
     

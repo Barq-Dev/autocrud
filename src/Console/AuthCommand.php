@@ -23,6 +23,8 @@ class AuthCommand extends Command
             ]);
 
             $this->info("run `composer require spatie/laravel-permission`");
+            $this->warn('run `php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"
+            `');
         }
         
     }

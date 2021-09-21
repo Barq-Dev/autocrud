@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run()
     {
-        $modules = ['users','barang','petugas'];
+        $modules = ['users'];
         
         $features = ['manage','view','create','edit','delete','restore','export'];
         
