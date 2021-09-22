@@ -41,7 +41,7 @@ Vue.mixin({
             try {
                 let user = store.state.auth.user;
 
-                if (user.roles[0].name == "admin") 
+                if (user.roles && user.roles[0].name == "admin") 
                     return true;
                     
                 if(role == 'visitor' && !store.getters.isAuth)
@@ -53,9 +53,9 @@ Vue.mixin({
                     })
                 }
                 // console.log(role, user.roles, user.roles.some(row => row.name.includes(role)))
-                if (is && user.roles.some(row => row.name.includes(role))) return true;
-                // if (!is && user.roles.some(row => row.name.includes(role))) return false;
-                if (!is && user.roles[0].name != role) return true;
+                if (is && user.roles && user.roles.some(row => row.name.includes(role))) return true;
+                // if (!is && user.roles && user.roles.some(row => row.name.includes(role))) return false;
+                if (!is && user.roles && user.roles[0].name != role) return true;
 
             } catch (error) {
 

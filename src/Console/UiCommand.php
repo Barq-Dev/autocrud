@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 class UiCommand extends Command
 {
     protected $signature = 'autocrud:ui 
-        {--i|init} {--a|all} {--assets} {--c|components} {--l|layouts}
+        {--i|init} {--a|all} {--app} {--assets} {--c|components} {--l|layouts}
         {--p|plugins} {--r|router} {--s|store} {--views}
     ';
     protected $description = 'Copying Vue UI';
@@ -29,7 +29,7 @@ class UiCommand extends Command
         }
 
         // Partials
-        $dirs = ['assets','components','layouts','plugins','router','store','views'];
+        $dirs = ['assets','components','layouts','plugins','router','store','views', 'app'];
 
         foreach ($dirs as $dir) {
             if($this->option($dir))

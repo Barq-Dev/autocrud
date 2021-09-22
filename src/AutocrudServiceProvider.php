@@ -61,6 +61,9 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Resources/js/vue/app.js' => resource_path('js/app.js'),
             __DIR__.'/Resources/js/vue/App.vue' => resource_path('js/App.vue'),
         ], 'autocrud-ui-vue');
+        $this->publishes([
+            __DIR__.'/Resources/js/vue/app.js' => resource_path('js/app.js'),
+        ], 'autocrud-ui-vue-app');
 
         // Partials
         $dirs = ['assets','components','layouts','plugins','router','store','views'];
