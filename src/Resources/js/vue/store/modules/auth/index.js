@@ -6,7 +6,7 @@ export default {
     isAuth: localStorage.getItem('isAuth') || false,
     token: localStorage.getItem('token') || '',
     cancelTokens: [],
-    error: ''
+    error: '',
   },
   getters:{
     cancelTokens(state) {
@@ -17,17 +17,23 @@ export default {
       SET_ERROR(state, value){
         state.error = value
       },
+      SET_LOADING(state, value = null){
+        state.loading = value
+      },
       CLEAR_ERROR(state, value){
         state.error = ''
       },
       LOGIN(state, data){
         state.isAuth = true
         localStorage.setItem('isAuth', true)
+        state.token = data.token
         localStorage.setItem('token', data.token)
       },
       LOGOUT(state){
         state.isAuth = false
         localStorage.removeItem('isAuth')
+        state.token = null
+        localStorage.removeItem('token')
       },
       ADD_CANCEL_TOKEN(state, token) {
         state.cancelTokens.push(token)
@@ -40,24 +46,31 @@ export default {
       login({commit}, data){
 
         commit('CLEAR_ERROR')
-
+        commit('SET_LOADING', true)
+        
         this._vm.$http.post('auth', data)
-          .then((response) => {
-            commit('LOGIN', response.data)
+          .then(async (response) => {
+            await commit('LOGIN', response.data)
+            
+            commit('SET_LOADING')
             router.push('/')
           })
           .catch(({response}) => {
+            commit('SET_LOADING')
             commit('SET_ERROR', response.data.error)
           })
       },
-      logout({commit}, data){
-        commit('LOGOUT')
+      async logout({commit}, data){
+        await commit('LOGOUT')
         router.push('/login')
       },
-      async auth({state}){
+      async auth({state, dispatch}){
         await this._vm.$http('auth')
           .then(({data})=>{
             state.user = data
+          })
+          .catch(({response})=>{
+            dispatch('logout')
           })
       },
       CANCEL_PENDING_REQUESTS(context) {

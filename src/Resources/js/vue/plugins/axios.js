@@ -22,7 +22,12 @@ instance.defaults.timeout = 60000
 instance.interceptors.request.use(
   config => {
     const source = axios.CancelToken.source()
+    // let token = localStorage.getItem('token')
 
+    // if (token) {
+    //   config.headers['Authorization'] = `Bearer ${ token }`
+    // }
+    config.headers['Authorization'] = `Bearer ${ store.state.auth.token }`
     config.cancelToken = source.token
     store.commit('auth/ADD_CANCEL_TOKEN', source, {root:true})
 

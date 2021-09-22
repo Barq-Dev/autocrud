@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Barqdev\Autocrud\AutoBase;
 use App\Http\Requests\UserRequest;
 use Illuminate\Support\Facades\Hash;
+use Barqdev\Autocrud\Models\AutoRole;
 
 class UserController extends Controller
 {
@@ -29,6 +30,8 @@ class UserController extends Controller
             else
                 $request['id'] = $user->id;
         }
+        if(!$request->role && $request->register)
+            $request['role'] = AutoRole::firstOrCreate(['name'=>'guest'])->name;
         
         if($request->has('file'))
             $request['avatar'] = $this->upload('files', $request->file);
@@ -41,7 +44,7 @@ class UserController extends Controller
     public function callbackAfterStoreOrUpdate($data, $request)
     {
         if($request['role']?? null)
-            $data->syncRoles($request['role']);
+            $data->assignRole($request['role']);
             
         $data['token'] = $data->createToken('wearebarqun')->plainTextToken;
         return $data;

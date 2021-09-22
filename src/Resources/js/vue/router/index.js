@@ -42,7 +42,8 @@ const routes = [
 
   router.beforeEach(async (to, from, next) => {
     /* must call `next` */
-    await store.dispatch('auth/auth')
+    if(store.state.auth.token)
+      await store.dispatch('auth/auth')
 
     if(!(store.state.auth.isAuth || store.state.auth.user.id) && to.name != 'login')
       next('login')

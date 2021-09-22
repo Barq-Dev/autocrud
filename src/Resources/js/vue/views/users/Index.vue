@@ -50,7 +50,7 @@ export default {
     ...mapActions('auth', ['auth']),
     saved(){
       this.auth()
-    }
+    },
   },
 }
 </script>

@@ -38,6 +38,7 @@
                           <v-text-field
                             label="Password"
                             v-model="form.password"
+                            @keyup.enter="login(form)"
                             outlined
                             dense
                             color="blue"
@@ -48,17 +49,16 @@
                             <v-row>
                               <v-col cols="12" sm="7">
                                 <v-checkbox
-                       
-                        label="Remember Me"
-                        class="mt-n1"
-                        color="blue"
-                      > </v-checkbox>
+                                  label="Remember Me"
+                                  class="mt-n1"
+                                  color="blue"
+                                ></v-checkbox>
                               </v-col>
                               <v-col cols="12" sm="5">
                                 <span class="caption blue--text">Forgot password</span>
                               </v-col>
                             </v-row>
-                          <v-btn color="blue" dark block tile @click="login(form)">Log in</v-btn>
+                          <v-btn color="blue" dark block tile :loading="loading" @click="login(form)">Log in</v-btn>
                      
                          <h5
                           class="text-center  grey--text mt-4 mb-3"
@@ -121,19 +121,10 @@
                         <v-row align="center" justify="center">
                           <v-col cols="12" sm="8">
                            <v-row>
-                           <v-col cols="12" sm="6">
+                           <v-col cols="12" sm="12">
                             <v-text-field
-                            label="First Name"
-                            outlined
-                            dense
-                            color="blue"
-                            autocomplete="false"
-                           class="mt-4"
-                          />
-                           </v-col>
-                           <v-col cols="12" sm="6">
-                            <v-text-field
-                            label="Last Name"
+                            label="Name"
+                            v-model="form.name"
                             outlined
                             dense
                             color="blue"
@@ -144,6 +135,7 @@
                            </v-row>
                           <v-text-field
                             label="Email"
+                            v-model="form.email"
                             outlined
                             dense
                             color="blue"
@@ -151,27 +143,29 @@
                           />
                           <v-text-field
                             label="Password"
+                            v-model="form.password"
+                            @keyup.enter="register"
                             outlined
                             dense
                             color="blue"
-                          autocomplete="false"
-                           type="password"
+                            autocomplete="false"
+                            type="password"
                           
                           />
                             <v-row>
                               <v-col cols="12" sm="7">
                                 <v-checkbox
                        
-                        label="I Accept AAE"
-                        class="mt-n1"
-                        color="blue"
-                      > </v-checkbox>
+                                  label="I Accept AAE"
+                                  class="mt-n1"
+                                  color="blue"
+                                > </v-checkbox>
                               </v-col>
                               <v-col cols="12" sm="5">
                                 <span class="caption blue--text ml-n4">Terms &Conditions</span>
                               </v-col>
                             </v-row>
-                          <v-btn color="blue" dark block tile>Sign up</v-btn>
+                          <v-btn color="blue" dark block tile @click="register" :loading="loading">Sign up</v-btn>
                      
                          <h5
                           class="text-center  grey--text mt-4 mb-3"
@@ -207,8 +201,8 @@ import {mapState, mapActions} from 'vuex'
    data: () => ({
     step: 1,
     form: {
-      email : 'bayu@gmail.com',
-      password : '123123',
+      email : '',
+      password : '',
       login : 1,
     }
   }),
@@ -216,10 +210,15 @@ import {mapState, mapActions} from 'vuex'
     source: String
   },
   methods: {
-    ...mapActions('auth',['login'])
+    ...mapActions('auth',['login']),
+    register(){
+      this.form.login = null
+      this.form.register = true
+      this.login(this.form)
+    }
   },
   computed:{
-    ...mapState('auth',['error'])
+    ...mapState('auth',['error','loading'])
   }
 
     

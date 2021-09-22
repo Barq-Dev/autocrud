@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Barqdev\Autocrud\AutoBase;
 use App\Http\Requests\RoleRequest;
 use Barqdev\Autocrud\Models\AutoRole;
