@@ -70,7 +70,7 @@
                     <v-divider v-if="link.divider" :key="link.divider"></v-divider>
                     <v-subheader v-if="link.subheader" :key="link.subheader">{{link.subheader}}</v-subheader>
                     <v-list-group
-                        v-if="link.childs"
+                        v-if="link.childs && link.childs.some(i => i.can == undefined || userCan(i.can))"
                         :key="link.text"
                         :value="link.childs.find((i)=> i.route == $route.path)"
                         :prepend-icon="link.icon"
@@ -80,14 +80,16 @@
                     <template v-slot:activator>
                         <v-list-item-title>{{link.text}}</v-list-item-title>
                     </template>
-                            <v-list-item v-for="child in link.childs" :key="child.text" router :to="child.route" active-class="border">
-                            <v-list-item-action>
-                                <v-icon>{{child.icon}}</v-icon>
-                            </v-list-item-action>
-                            <v-list-item-content>
-                                <v-list-item-title> {{child.text}} </v-list-item-title>
-                            </v-list-item-content>
-                        </v-list-item>
+                        <template v-for="child in link.childs" >
+                            <v-list-item v-if="child.can == undefined || userCan(child.can)" :key="child.text" router :to="child.route" active-class="border">
+                                <v-list-item-action>
+                                    <v-icon>{{child.icon}}</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title> {{child.text}} </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
                     </v-list-group>
                 </template>
             </v-list>
