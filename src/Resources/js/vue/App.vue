@@ -4,7 +4,7 @@
     
     <v-main>
       <v-container grid-list-xs>
-        <v-breadcrumbs v-if="$store.state.auth.isAuth" :items="items">
+        <v-breadcrumbs v-if="$store.state.auth.isAuth" :items="breadcrumbs">
           <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
           </template>
@@ -48,5 +48,11 @@ export default {
       ],
     }
   },
+  computed:{
+    breadcrumbs(){
+      // console.log(this.$route);
+      return this.$route.meta.breadcrumbs || []
+    }
+  }
 }
 </script>

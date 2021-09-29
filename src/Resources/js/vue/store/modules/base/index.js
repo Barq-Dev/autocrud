@@ -52,25 +52,28 @@ export default {
       },
   },
   actions: {
-      async getData({state, commit}, {customUrl, params, id} = {}){
-        state.loading = true
+      getData({state, commit}, {customUrl, params, id} = {}){
+        return new Promise(async (resolve) => {
+          state.loading = true
       
-        let url = `${customUrl || state.moduleUrl}`+(id? `/${id}` : ``)
-        const {data} = await this._vm.$http(url, {
-          params: {...state.options, ...params}
-        })
-        if(id){
-          commit('SET_ITEM', data)
-        }
-        else{
-          commit('SET_ITEMS', data.data)
-          commit('SET_TOTAL', data.total)
-        }
+          let url = `${customUrl || state.moduleUrl}`+(id? `/${id}` : ``)
+          const {data} = await this._vm.$http(url, {
+            params: {...state.options, ...params}
+          })
+          resolve(data)
+          if(id){
+            commit('SET_ITEM', data)
+          }
+          else{
+            commit('SET_ITEMS', data.data)
+            commit('SET_TOTAL', data.total)
+          }
 
-        state.loading = false
+          state.loading = false
+        })
       },
 
-      async saveData({state, commit, dispatch}, {customUrl, data}){
+      async saveData({state, commit, dispatch}, {customUrl, data, params = {}}){
         state.loading = true
         
         await this._vm.$http.post(customUrl || state.moduleUrl, data)
@@ -82,11 +85,14 @@ export default {
             this._vm.$swal('Failed','Failed to save data','error')
             commit('SET_ERRORS', response.data)
           })
-        dispatch('getData')
+
+        if(!params.noState)
+          dispatch('getData')
+
         state.loading = false
       },
 
-      async deleteData({state, dispatch}, {customUrl, data}){
+      async deleteData({state, dispatch}, {customUrl, data, params = {} }){
         state.loading = true
 
         await this._vm.$http.delete(`${customUrl || state.moduleUrl}/${data.id}`, {...data})
@@ -96,8 +102,8 @@ export default {
           .catch((error) => {
             this._vm.$swal('Failed','Failed to delete data','error')
           })
-
-        dispatch('getData')
+        if(!params.noState)
+          dispatch('getData')
         state.loading = false
       }
   },

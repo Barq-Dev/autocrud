@@ -1,6 +1,6 @@
 <template>
     <nav>
-        <v-app-bar color="blue" dark app>
+        <v-app-bar :color="color || 'blue'" dark app>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"> </v-app-bar-nav-icon>
 
             <v-toolbar-title class="text-uppercase">
@@ -41,7 +41,7 @@
 
         </v-app-bar>
 
-        <v-navigation-drawer v-model="drawer" dark app class="blue darken-4"
+        <v-navigation-drawer v-model="drawer" dark app :class="color || 'blue'" class="darken-4"
             
         >
             <v-layout column align-center>
@@ -106,7 +106,7 @@ export default {
         }
     },
     computed:{
-        ...mapState('theme',['links']),
+        ...mapState('theme',['links','color']),
         ...mapState('auth',['user']),
     },
     methods: {

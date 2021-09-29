@@ -132,7 +132,7 @@
 </template>
 
 <script>
-import {mapMutations, mapActions} from 'vuex'
+import {mapState, mapMutations, mapActions} from 'vuex'
   export default {
     props:{
       moduleName:String,
@@ -152,12 +152,8 @@ import {mapMutations, mapActions} from 'vuex'
       },
     },
     data: () => ({
-      loading: false,
-      items: [],
-      total: 0,
       search: '',
       options: {},
-      errors: {},
       dialog: false,
       editedItem: {},
     }),
@@ -167,18 +163,7 @@ import {mapMutations, mapActions} from 'vuex'
     },
 
     computed: {
-      // ...mapState('base', ['loading','items','total','errors']),
-      meta(){
-        return {
-          ...this.options, 
-          page: this.options.page,
-          per_page: this.options.itemsPerPage,
-          sortby: this.options.sortBy && this.options.sortBy[0],
-          sortbydesc: this.options.sortDesc && this.options.sortDesc[0]? 'desc' : 'asc',
-          q: this.search, 
-          ...this.params
-        }
-      },
+      ...mapState('base', ['loading','items','total','errors']),
       form(){
         if(this.formData){
           const formData = new FormData()
@@ -199,20 +184,15 @@ import {mapMutations, mapActions} from 'vuex'
 
     methods: {
       ...mapActions('base',['getData','saveData','deleteData']),
-      ...mapMutations('base',['SET_MODULE_NAME']),
+      ...mapMutations('base',['SET_OPTIONS','SET_MODULE_NAME']),
       load(){
+        this.SET_OPTIONS({...this.options, q: this.search, ...this.params})
         
-        this.getData({params: this.meta})
-          .then((res)=>{
-            this.items = res.data
-            this.total = res.total
-          })
-
+        this.getData({params: this.params})
       },
 
       async save () {
-        await this.saveData({ data: this.form, params:{noState:true} })
-        this.load()
+        await this.saveData({data: this.form})
         this.$emit('saved', this.form)
         if(this._.isEmpty(this.errors))
           this.close()
