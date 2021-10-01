@@ -12,7 +12,7 @@ export default {
       { subheader: 'Settings'},
       { icon: 'person', text:'Users',route:'/users' },
       { icon: 'admin_panel_settings', text:'Roles & Permissions',route:'/roles' },
-      { icon: 'change_history', text:'Log Activity',route:'/log-activity' },
+      { icon: 'change_history', text:'Activity Log',route:'/activity-log' },
       // { 
       //   icon: 'edit', 
       //   text:'Dropdown', 

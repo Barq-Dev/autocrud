@@ -56,7 +56,7 @@ const routes = [
       meta:{
         breadcrumbs:[
           { text: 'Dashboard', to:'/'},
-          { text: 'Log Activity', disabled: false},
+          { text: 'Activity Log', disabled: false},
         ]
       }
     },

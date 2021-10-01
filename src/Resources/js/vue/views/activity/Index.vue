@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      moduleName: 'Log Activity',
+      moduleName: 'Activity Log',
       slots:['subject','properties','causer','description'],
       headers: [
         { text: 'Date', value: 'created_at'},

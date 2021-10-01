@@ -12,7 +12,7 @@ class AutocrudServiceProvider extends ServiceProvider{
     public function boot()
     {
         # code...
-        // git tag -a 1.4.0 -m "Releasing version v1.4.0"
+        // git tag -a 1.5.9 -m "Releasing version v1.5.9"
         // git push origin 1.4.0   
         
         $this->publishList();

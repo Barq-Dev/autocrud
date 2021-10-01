@@ -10,7 +10,7 @@ trait UserTrait {
 
     public function getAvatarLinkAttribute()
     {
-        return $this->avatar? Storage::url("uploads/files/$this->avatar") : '/images/default.png';
+        return $this->avatar? Storage::url("uploads/files/$this->avatar") : '/images/autocrud/default.png';
     }
 
     public function getRoleAttribute()
