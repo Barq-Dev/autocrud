@@ -5,6 +5,7 @@ import store from '@/store'
 import Dashboard from '../views/Dashboard'
 import Login from '../views/auth/Login'
 import Users from '../views/users/Index'
+import Activity from '../views/activity/Index'
 import Roles from '../views/roles/Index'
 import myRoutes from './routes'
 
@@ -12,24 +13,52 @@ Vue.use(VueRouter)
 
 const routes = [
     {
-      path: '/',
-      name: 'dashboard',
-      component: Dashboard,
-    },
-    {
       path: '/login',
       name: 'login',
       component: Login,
     },
     {
+      path: '/',
+      name: 'dashboard',
+      component: Dashboard,
+      meta:{
+        breadcrumbs:[
+          { text: 'Dashboard', disabled: false},
+        ]
+      }
+    },
+    {
       path: '/users',
       name: 'users',
       component: Users,
+      meta:{
+        breadcrumbs:[
+          { text: 'Dashboard', to:'/'},
+          { text: 'Users', disabled: false},
+        ]
+      }
     },
     {
       path: '/roles',
       name: 'roles',
       component: Roles,
+      meta:{
+        breadcrumbs:[
+          { text: 'Dashboard', to:'/'},
+          { text: 'Roles', disabled: false},
+        ]
+      }
+    },
+    {
+      path: '/log-activity',
+      name: 'log-activity',
+      component: Activity,
+      meta:{
+        breadcrumbs:[
+          { text: 'Dashboard', to:'/'},
+          { text: 'Log Activity', disabled: false},
+        ]
+      }
     },
     ...myRoutes,
   ]

@@ -1,5 +1,7 @@
 <template>
   <v-data-table
+    :show-select="showSelected"
+    v-model="selected"
     :headers="headers"
     :items="items"
     :options.sync="options"
@@ -17,7 +19,15 @@
           inset
           vertical
         ></v-divider>
-        
+        <v-btn
+          v-if="btnImport"
+          class="mr-2"
+          small
+          outlined
+          color="primary"
+        >
+        <v-icon>file_upload</v-icon>
+        </v-btn>
         <v-menu
             bottom
             left
@@ -25,10 +35,11 @@
             <template v-slot:activator="{ on, attrs }">
               <v-btn
                 small
-                rounded
+                
                 color="primary"
                 v-bind="attrs"
                 v-on="on"
+                v-if="userCan(`${url}-export`) && btnExport"
               >
               <v-icon>file_download</v-icon>
                 Export
@@ -36,20 +47,22 @@
             </template>
 
             <v-list>
-              <v-list-item
-                dense
-                v-for="(item) in ['excel', 'pdf']"
-                :key="item"
-                @click="exportData(item)"
-              >
-                <v-list-item-title>
-                  <v-icon>fa fa-file-{{item}}</v-icon> 
-                    <span>{{ _.startCase(item) }}</span>
-                </v-list-item-title>
-                
-              </v-list-item>
+              <template v-for="(item) in ['excel', 'pdf']">
+                <v-list-item
+                  dense
+                  :key="item"
+                  @click="exportData(item)"
+                >
+                  <v-list-item-title>
+                    <v-icon>fa fa-file-{{item}}</v-icon> 
+                      <span>{{ _.startCase(item) }}</span>
+                  </v-list-item-title>
+                  
+                </v-list-item>
+              </template>
             </v-list>
-          </v-menu>
+        </v-menu>
+        
         <v-spacer></v-spacer>
 
         <v-text-field
@@ -65,19 +78,10 @@
         <v-dialog v-model="dialog" max-width="500px">
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              outlined
-              class="ml-2 mb-2"
-              color="primary"
-
-              :loading="loading"
-              @click="load"
-            >
-              <v-icon>cached</v-icon>
-            </v-btn>
-            <v-btn
-              v-if="btnAdd"
+              v-if="btnAdd && userCan(`${url}-create`)"
               color="primary"
               dark
+              small
               class="mb-2"
               v-bind="attrs"
               v-on="on"
@@ -103,6 +107,27 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
+        <v-btn
+          v-if="selected.length"
+          outlined
+          class="ml-2 mb-2"
+          color="red"
+
+          :loading="loading"
+          @click="deleteItem"
+        >
+          <v-icon>delete</v-icon> ({{selected.length}})
+        </v-btn>
+        <v-btn
+          outlined
+          small
+          class="ml-2 mb-2"
+          color="primary"
+          :loading="loading"
+          @click="load"
+        >
+          <v-icon>cached</v-icon>
+        </v-btn>
       </v-toolbar>
     </template>
 
@@ -114,12 +139,14 @@
       <v-icon
         small
         class="mr-2"
+        v-if="userCan(`${url}-edit`)"
         @click="editItem(item)"
       >
         edit
       </v-icon>
       <v-icon
         small
+        v-if="userCan(`${url}-delete`)"
         @click="deleteItem(item)"
       >
         delete
@@ -132,7 +159,7 @@
 </template>
 
 <script>
-import {mapMutations, mapActions} from 'vuex'
+import {mapActions} from 'vuex'
   export default {
     props:{
       moduleName:String,
@@ -150,9 +177,22 @@ import {mapMutations, mapActions} from 'vuex'
         type:Boolean,
         default: true
       },
+      btnImport:{
+        type:Boolean,
+        default: false
+      },
+      btnExport:{
+        type:Boolean,
+        default: false
+      },
+      showSelected:{
+        type:Boolean,
+        default: true
+      },
     },
     data: () => ({
       loading: false,
+      selected: [],
       items: [],
       total: 0,
       search: '',
@@ -162,12 +202,7 @@ import {mapMutations, mapActions} from 'vuex'
       editedItem: {},
     }),
 
-    created() {
-      this.SET_MODULE_NAME(this.moduleName)
-    },
-
     computed: {
-      // ...mapState('base', ['loading','items','total','errors']),
       meta(){
         return {
           ...this.options, 
@@ -178,6 +213,9 @@ import {mapMutations, mapActions} from 'vuex'
           q: this.search, 
           ...this.params
         }
+      },
+      url(){
+        return this._.kebabCase(this.moduleName)
       },
       form(){
         if(this.formData){
@@ -199,19 +237,21 @@ import {mapMutations, mapActions} from 'vuex'
 
     methods: {
       ...mapActions('base',['getData','saveData','deleteData']),
-      ...mapMutations('base',['SET_MODULE_NAME']),
+      // ...mapMutations('base',['SET_MODULE_NAME']),
       load(){
-        
-        this.getData({params: this.meta})
+        this.loading = true
+        this.getData({customUrl: this.url, params: this.meta})
           .then((res)=>{
             this.items = res.data
             this.total = res.total
+            this.loading = false
           })
 
       },
 
       async save () {
-        await this.saveData({ data: this.form, params:{noState:true} })
+        this.loading = true
+        await this.saveData({ customUrl: this.url, data: this.form, params:{noState:true} })
         this.load()
         this.$emit('saved', this.form)
         if(this._.isEmpty(this.errors))
@@ -223,10 +263,29 @@ import {mapMutations, mapActions} from 'vuex'
         this.dialog = true
       },
 
-      deleteItem (item) {
-        confirm('Are you sure you want to delete this item?') && 
-          this.deleteData({data: item})
-        
+      async deleteItem (item) {
+        this.$swal({
+          title: 'Delete Item',
+          text: 'Are you sure want to delete this item?',
+          icon: 'warning',
+          confirmButtonText: "Yes!",
+          showCancelButton: true,
+          showLoaderOnConfirm: true,
+          preConfirm: async () => {
+            this.loading = true
+            await this.deleteData({
+              customUrl: this.url, 
+              data: item, 
+              params:{
+                noState:true, 
+                selected: this.selected.map(i=>i.id)
+              }
+            })
+            this.loading = false
+            this.selected = []
+            this.load()
+          }
+        })
       },
 
       exportData(exportType){

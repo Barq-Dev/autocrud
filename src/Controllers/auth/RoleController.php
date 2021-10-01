@@ -20,7 +20,6 @@ class RoleController extends Controller
     }
 
     public function customRequestData($request){
-
         if(!$request->id && $this->model->whereName($request->name)->first())
             throw ValidationException::withMessages(['role' => 'Role has been exists'])->status(422);
         $request['guard_name'] = 'web';
@@ -28,8 +27,7 @@ class RoleController extends Controller
     }
     public function callbackAfterStoreOrUpdate($data, $request)
     {
-        if($request['permissions']?? null)
-            $data->syncPermissions($request['permissions']);
+        $data->syncPermissions($request['permissions']?? []);
 
         return $data;
     }

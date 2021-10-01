@@ -95,7 +95,7 @@ export default {
       async deleteData({state, dispatch}, {customUrl, data, params = {} }){
         state.loading = true
 
-        await this._vm.$http.delete(`${customUrl || state.moduleUrl}/${data.id}`, {...data})
+        await this._vm.$http.delete(`${customUrl || state.moduleUrl}/${data.id}`, {...data, params})
           .then(() => {
             this._vm.$swal('Success','Data has been deleted','success')
           })

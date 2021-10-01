@@ -61,12 +61,17 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Resources/js/vue/app.js' => resource_path('js/app.js'),
             __DIR__.'/Resources/js/vue/App.vue' => resource_path('js/App.vue'),
         ], 'autocrud-ui-vue');
+
         $this->publishes([
             __DIR__.'/Resources/js/vue/app.js' => resource_path('js/app.js'),
         ], 'autocrud-ui-vue-app');
 
+        $this->publishes([
+            __DIR__."/Resources/js/vue/assets/img/" => public_path("images/autocrud/"),
+        ], "autocrud-ui-vue-assets");
+
         // Partials
-        $dirs = ['assets','components','layouts','plugins','router','store','views'];
+        $dirs = ['components','layouts','plugins','router','store','views'];
 
         foreach ($dirs as $dir) {
             $this->publishes([
@@ -86,6 +91,13 @@ class AutocrudServiceProvider extends ServiceProvider{
             __DIR__.'/Requests/RoleRequest.php' => app_path('Http/Requests/RoleRequest.php'),
             __DIR__.'/Database/Seeders/RoleSeeder.php' => database_path('seeders/RoleSeeder.php'),
         ], 'autocrud-auth-acl');
+
+        $this->publishes([
+            __DIR__.'/Controllers/ActivityController.php' => app_path('Http/Controllers/ActivityController.php'),
+            __DIR__.'/Resources/js/vue/views/activity' => resource_path('js/views/activity'),
+            __DIR__.'/Resources/js/vue/router/index.js' => resource_path('js/router/index.js'),
+            __DIR__.'/Resources/js/vue/store/modules/theme/autocrud.js' => resource_path('js/store/modules/theme/autocrud.js'),
+        ], 'autocrud-auth-log');
 
     }
 

@@ -31,7 +31,7 @@ trait AutoBase {
 
     public function index()
     {
-        // dd(request()->all());
+        
         $request = request();
         $query = [
             'sortby' => $request->sortby ?? 'created_at',
@@ -106,16 +106,18 @@ trait AutoBase {
 
     public function destroy($id)
     {
+        
         if(request()->forceDelete == 'restore'){
             $model = $this->model->withTrashed()->find($id)->restore();
         }
         elseif(request()->forceDelete)
             $model = $this->model->withTrashed()->find($id)->forceDelete();
         else{
-            $model = $this->model->find($id);            
+                $model = request()->selected? $this->model : $this->model->find($id);            
             
             try {
-                $model->delete();                
+                request()->selected? 
+                    $model->destroy(request()->selected) : $model->delete();                
             } catch (\Throwable $th) {                      
                 $nama = $model->nama ? $model->nama : $model->name ?? 'item id '.$model->id;
                  return $this->json(['status' => false,'content' => 'Gagal! '.ucfirst($nama).' Masih Memiliki Data Terkait! Code:'. $th->getCode()]);
