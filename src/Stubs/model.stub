@@ -1,0 +1,13 @@
+<?php
+
+namespace {{ namespace }};
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Barqdev\Autocrud\AutoModel;
+
+class {{ class }} extends AutoModel
+{
+    use HasFactory;
+    
+    protected $guarded = [];
+}

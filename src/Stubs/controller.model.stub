@@ -1,0 +1,34 @@
+<?php
+
+namespace {{ namespace }};
+
+use App\Models\{{model}};
+use Barqdev\Autocrud\AutoBase;
+use App\Http\Requests\{{model}}Request;
+use {{ rootNamespace }}Http\Controllers\Controller;
+
+class {{ class }} extends Controller
+{
+    use AutoBase;
+
+    public function __construct()
+    {
+        $this->model = new {{model}};
+        $this->searchFields = []; //Fill with searchable searchFields
+        $this->request = new {{model}}Request;
+    }
+
+    public function customRequestData($request){
+
+        //if($request->has('file'))
+        //    $request['foto'] = $this->upload('foto',$request->file);
+
+        return $request;
+    }
+
+    public function callbackAfterStoreOrUpdate($data, $request)
+    {
+        # code...
+        return $data;
+    }
+}
