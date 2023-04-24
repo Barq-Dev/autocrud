@@ -218,7 +218,7 @@ trait AutoBase
         $fileName = $this->generateUniqueFileName($file);
 
         $targetPath = "public/uploads/{$directory}";
-
+        Storage::makeDirectory("uploads/{$directory}");
         Storage::putFileAs($targetPath, $file, $fileName);
 
         return $fileName;
@@ -240,10 +240,5 @@ trait AutoBase
             return $request;
         }
         return str_replace([','], '', $value);
-    }
-
-    public function testing()
-    {
-        dd('success..');
     }
 }
