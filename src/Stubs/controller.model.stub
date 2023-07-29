@@ -14,21 +14,18 @@ class {{ class }} extends Controller
     public function __construct()
     {
         $this->model = new {{model}};
-        $this->searchFields = []; //Fill with searchable searchFields
+        $this->searchFields = [
+            ...Schema::getColumnListing((new {{model}})->getTable())
+        ]; //Fill with searchable searchFields
         $this->request = new {{model}}Request;
     }
 
-    public function customRequestData($request){
-
-        //if($request->has('file'))
-        //    $request['foto'] = $this->upload('foto',$request->file);
-
+    public function beforeSave($request){
         return $request;
     }
 
-    public function callbackAfterStoreOrUpdate($data, $request)
+    public function afterSave($data)
     {
-        # code...
         return $data;
     }
 }
