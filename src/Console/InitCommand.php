@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 
 class InitCommand extends Command
 {
-    protected $signature = 'autocrud:stub';
+    protected $signature = 'autocrud:publish';
     protected $description = 'Modifying controller & model stub';
 
     public function handle()
